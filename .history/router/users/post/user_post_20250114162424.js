@@ -53,14 +53,8 @@ router.post("/reg", async (req, res) => {
         .status(400)
         .json({ message: "This email already exists", status: "failed" });
     }
-    if (type == "check") {
-      res.status(200).json({
-        status: "success",
-        message: "User not exists",
-      });
-    }
+    // encrypt the password
     if (type == "reg") {
-      // encrypt the password
       const hashedPassword = await bcrypt.hash(password, 10);
       const newUser = new userModel({
         info: info,

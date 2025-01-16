@@ -53,10 +53,10 @@ router.post("/reg", async (req, res) => {
         .status(400)
         .json({ message: "This email already exists", status: "failed" });
     }
-    if (type == "check") {
+    if(type == 'check'){
       res.status(200).json({
         status: "success",
-        message: "User not exists",
+        message: "User ",
       });
     }
     if (type == "reg") {

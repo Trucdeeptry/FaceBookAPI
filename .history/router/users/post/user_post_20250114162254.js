@@ -37,7 +37,7 @@ router.post("/log", async (req, res) => {
 // get user for register
 router.post("/reg", async (req, res) => {
   try {
-    const { email, password, info, type } = req.body;
+    const { email, password, info } = req.body;
     if (!email || !password || !info) {
       return res.status(400).json({
         message: "email, password, info are required",
@@ -53,26 +53,18 @@ router.post("/reg", async (req, res) => {
         .status(400)
         .json({ message: "This email already exists", status: "failed" });
     }
-    if (type == "check") {
-      res.status(200).json({
-        status: "success",
-        message: "User not exists",
-      });
-    }
-    if (type == "reg") {
-      // encrypt the password
-      const hashedPassword = await bcrypt.hash(password, 10);
-      const newUser = new userModel({
-        info: info,
-        email: email,
-        password: hashedPassword,
-      });
-      await newUser.save();
-      res.status(201).json({
-        status: "success",
-        message: "User registered successfully",
-      });
-    }
+    // encrypt the password
+    const hashedPassword = await bcrypt.hash(password, 10)
+    const newUser = new userModel({
+      info: info,
+      email: email,
+      password: hashedPassword,
+    });
+    await newUser.save();
+    res.status(201).json({
+      status: "success",
+      message: "User registered successfully",
+    });
   } catch (error) {
     console.error(error);
     res.status(500).send("Error post reg user");
