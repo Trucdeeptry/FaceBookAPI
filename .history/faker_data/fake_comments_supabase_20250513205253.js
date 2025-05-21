@@ -1,0 +1,1 @@
+import supabase from "../router/composables/supabase";

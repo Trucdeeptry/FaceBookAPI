@@ -1,0 +1,156 @@
+const { faker } = require("@faker-js/faker");
+const supabase = require("../router/composables/supabase.js");
+
+// Hàm tạo user ảo bằng Admin API
+const SERVICE_ROLE_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh3cmRuYW1jdmp5dG5hc2h5aWx2Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc0NTczMzYyMywiZXhwIjoyMDYxMzA5NjIzfQ.9EmpW994jmzj9bGFUWaF2pgpe4Gn3GWzqAYAvb2PWgs"; // Lấy từ Supabase Dashboard > Settings > API
+const SUPABASE_URL = "https://xwrdnamcvjytnashyilv.supabase.co";
+async function createVirtualUser(email, password) {
+  try {
+    const response = await fetch(`${SUPABASE_URL}/auth/v1/admin/users`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${SERVICE_ROLE_KEY}`,
+        "Content-Type": "application/json",
+        apikey: SERVICE_ROLE_KEY,
+      },
+      body: JSON.stringify({
+        email: email,
+        password: password,
+        email_confirm: true,
+      }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || "Lỗi khi tạo user");
+    }
+
+    console.log("User ảo đã được tạo:", data);
+    return data;
+  } catch (error) {
+    console.error("Lỗi:", error.message);
+    return null;
+  }
+}
+
+// // Gọi hàm để tạo user ảo
+// for (let index = 0; index < 85; index++) {
+//     createVirtualUser(`virtual_user@example.com${index}`, '9942994Ngoc');
+// }
+
+// Hàm tạo ngày sinh ngẫu nhiên từ 1990 đến 2010
+function randomBirthday() {
+  const start = new Date(1990, 0, 1);
+  const end = new Date(2010, 11, 31);
+  const date = new Date(
+    start.getTime() + Math.random() * (end.getTime() - start.getTime())
+  );
+  return date.toISOString().split("T")[0]; // Định dạng YYYY-MM-DD
+}
+
+// Hàm tạo gender ngẫu nhiên (1, 2, 3)
+function randomGender() {
+  return Math.floor(Math.random() * 3) + 1;
+}
+
+// Hàm lấy user_id từ email trong bảng auth.users
+async function getUserIdByEmail(email) {
+  try {
+    let page = 1;
+    const perPage = 100;
+    const response = await fetch(
+      `${SUPABASE_URL}/auth/v1/admin/users?page=${page}&per_page=${perPage}`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${SERVICE_ROLE_KEY}`,
+          "Content-Type": "application/json",
+          apikey: SERVICE_ROLE_KEY,
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`Lỗi khi lấy danh sách user: ${response.statusText}`);
+    }
+
+    const users = await response.json();
+    console.log(users.users.length);
+
+    const user = users.users.find((u) => u.email === email); // Tìm user theo email
+
+    if (!user) {
+      console.error(`Không tìm thấy user với email ${email}`);
+      return null;
+    }
+    console.log("user:", user.id);
+
+    return user.id;
+  } catch (error) {
+    console.error("Lỗi:", error.message);
+    return null;
+  }
+}
+// Hàm kiểm tra xem email đã tồn tại trong profiles chưa
+async function isEmailInProfiles(email) {
+  const { data, error } = await supabase
+    .from("profiles")
+    .select("email")
+    .eq("email", email)
+    .maybeSingle();
+
+  if (error) {
+    console.error(`Lỗi khi kiểm tra email ${email}:`, error.message);
+    return false;
+  }
+  return !!data; // Trả về true nếu email đã tồn tại
+}
+// Hàm tạo và chèn 85 bản ghi vào bảng profiles
+async function insertVirtualProfiles() {
+  const profiles = [];
+
+  // Tạo dữ liệu cho 85 user
+  for (let index = 0; index < 85; index++) {
+    const email = `virtual_user@example.com${index}`;
+    // Kiểm tra xem email đã tồn tại trong profiles chưa
+    const emailExists = await isEmailInProfiles(email);
+    if (emailExists) {
+      console.log(`Email ${email} đã tồn tại trong profiles, bỏ qua.`);
+      continue;
+    }
+    const user_id = await getUserIdByEmail(email);
+
+    if (!user_id) {
+      console.error(`Bỏ qua user với email ${email} vì không tìm thấy user_id`);
+      continue;
+    }
+
+    profiles.push({
+      email: email,
+      birthday: randomBirthday(),
+      gender: randomGender(),
+      user_id: user_id,
+      firstname: faker.person.firstName(),
+      surname: faker.person.lastName(),
+    });
+  }
+
+  // Chèn tất cả bản ghi vào bảng profiles
+  const { data, error } = await supabase
+    .from("profiles")
+    .insert(profiles)
+    .select();
+
+  if (error) {
+    console.error("Lỗi khi chèn dữ liệu:", error.message);
+    return;
+  }
+
+  console.log("Đã chèn thành công:", data.length, "bản ghi");
+}
+
+// Chạy hàm
+// insertVirtualProfiles().catch(console.error);
+getUserIdByEmail("virtual_user@example.com71");
