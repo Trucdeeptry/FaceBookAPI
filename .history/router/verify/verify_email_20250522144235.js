@@ -30,7 +30,7 @@ const transporter = nodemailer.createTransport({
   port: 465,
   secure: true, // true for port 465, false for other ports
   auth: {
-    user: process.env.GMAIL,
+    user: ,
     pass: process.env.PASSWORD,
   },
 });
@@ -112,7 +112,7 @@ function sendConfirmationEmail(to, token, message) {
             <div class="email-body">
               <p>Hello,</p>
               <p>${message} and verify your email address, please click the button below:</p>
-              <a href="${process.env.BE_URL}/email/verify?token=${token}" class="button">Verify Your Email</a>
+              <a href="${process.env.BE_URL}/verify?token=${token}" class="button">Verify Your Email</a>
               <p>If you didn't use TSocial, you can safely ignore this email.</p>
             </div>
             <div class="footer">
