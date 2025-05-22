@@ -204,10 +204,9 @@ router.get("/is_verify", (req, res) => {
       .json({ message: "Something when wrong. Please contact the developer" })
       .send("Something when wrong. Please contact the developer");
   }
-  const isExist = isExistToken(token);
+  const isExistx = isExistToken(token);
   if (isExist) {
     const isVerify = isVerifyToken(token);
-    const userEmail = jwt.decode(token, process.env.SECRET_KEY);
     if (!isVerify) {
       return res.status(400).json({
         message: `Account with email ${userEmail} is not verified`,
