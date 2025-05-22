@@ -196,7 +196,7 @@ router.get("/verify", (req, res) => {
   }
 });
 
-router.get("/is_verify", (req, res) => {
+router.post("/is_verify", (req, res) => {
   const { token } = req.query;
   if (!token) {
     return res

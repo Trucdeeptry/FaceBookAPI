@@ -196,7 +196,7 @@ router.get("/verify", (req, res) => {
   }
 });
 
-router.get("/is_verify", (req, res) => {
+router.post("/is_verify", (req, res) => {
   const { token } = req.query;
   if (!token) {
     return res
@@ -206,12 +206,12 @@ router.get("/is_verify", (req, res) => {
   }
   const isExist = isExistToken(token);
   if (isExist) {
-    const isVerify = isVerifyToken(token);
-    if (!isVerify) {
+    const isVerify = isVerifyToken(token)
+    if(!isVerify){
       return res.status(400).json({
-        message: `Account with email ${userEmail} is not verified`,
-        status: "failed",
-      });
+      message: `Account with email ${userEmail} is verified`,
+      status: "success",
+    }); 
     }
     return res.status(200).json({
       message: `Account with email ${userEmail} is verified`,

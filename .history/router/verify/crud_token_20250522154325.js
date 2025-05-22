@@ -86,5 +86,4 @@ module.exports = {
   isExistEmail,
   deleteEmail,
   setVerifyToken,
-  isVerifyToken
 };

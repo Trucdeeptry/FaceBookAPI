@@ -11,8 +11,7 @@ const {
   isExistEmail,
   addToken,
   deleteEmail,
-  setVerifyToken,
-  isVerifyToken,
+  setVerifyToken
 } = require("./crud_token");
 
 // Hàm tạo token xác nhận
@@ -175,7 +174,7 @@ router.get("/verify", (req, res) => {
       }
 
       const userEmail = decoded.email;
-      setVerifyToken(token);
+      setVerifyToken(token)
       return res.status(200).json({
         message: `Account with email ${userEmail} verified successfully`,
         status: "success",
@@ -187,7 +186,7 @@ router.get("/verify", (req, res) => {
           </body>
         </html>
       `);
-    });
+      });
   } else {
     return res
       .status(400)
@@ -196,8 +195,8 @@ router.get("/verify", (req, res) => {
   }
 });
 
-router.get("/is_verify", (req, res) => {
-  const { token } = req.query;
+router.post('/is_verify', (req, res) => {
+   const { token } = req.query;
   if (!token) {
     return res
       .status(400)
@@ -206,23 +205,13 @@ router.get("/is_verify", (req, res) => {
   }
   const isExist = isExistToken(token);
   if (isExist) {
-    const isVerify = isVerifyToken(token);
-    if (!isVerify) {
-      return res.status(400).json({
-        message: `Account with email ${userEmail} is not verified`,
-        status: "failed",
-      });
-    }
-    return res.status(200).json({
-      message: `Account with email ${userEmail} is verified`,
-      status: "success",
-    });
+   
   } else {
     return res
       .status(400)
       .json({ message: "Session is old. Please check the lastest email" })
       .send("Session is old. Please check the lastest email");
   }
-});
+})
 
 module.exports = router;

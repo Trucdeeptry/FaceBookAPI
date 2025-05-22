@@ -73,11 +73,6 @@ const setVerifyToken = (token) => {
   };
   saveData(data);
 };
-const isVerifyToken = (token) => {
-  const data = loadData();
-  let indexToken = data.findIndex((t) => t.token == token);
-  return data[indexToken].isVerify
-}
 module.exports = {
   loadData,
   addToken,
@@ -86,5 +81,4 @@ module.exports = {
   isExistEmail,
   deleteEmail,
   setVerifyToken,
-  isVerifyToken
 };

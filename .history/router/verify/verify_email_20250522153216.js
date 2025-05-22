@@ -11,8 +11,6 @@ const {
   isExistEmail,
   addToken,
   deleteEmail,
-  setVerifyToken,
-  isVerifyToken,
 } = require("./crud_token");
 
 // Hàm tạo token xác nhận
@@ -175,8 +173,7 @@ router.get("/verify", (req, res) => {
       }
 
       const userEmail = decoded.email;
-      setVerifyToken(token);
-      return res.status(200).json({
+      res.status(200).json({
         message: `Account with email ${userEmail} verified successfully`,
         status: "success",
       }).send(`
@@ -196,8 +193,8 @@ router.get("/verify", (req, res) => {
   }
 });
 
-router.get("/is_verify", (req, res) => {
-  const { token } = req.query;
+router.post('/is_veriy', (req, res) => {
+   const { token } = req.query;
   if (!token) {
     return res
       .status(400)
@@ -206,16 +203,26 @@ router.get("/is_verify", (req, res) => {
   }
   const isExist = isExistToken(token);
   if (isExist) {
-    const isVerify = isVerifyToken(token);
-    if (!isVerify) {
-      return res.status(400).json({
-        message: `Account with email ${userEmail} is not verified`,
-        status: "failed",
-      });
-    }
-    return res.status(200).json({
-      message: `Account with email ${userEmail} is verified`,
-      status: "success",
+    jwt.verify(token, process.env.SECRET_KEY, (err, decoded) => {
+      if (err) {
+        return res
+          .status(400)
+          .json({ message: "Session has ended. Please try again" })
+          .send("Session has ended. Please try again");
+      }
+
+      const userEmail = decoded.email;
+      res.status(200).json({
+        message: `Account with email ${userEmail} verified successfully`,
+        status: "success",
+      }).send(`
+        <html>
+          <body style="text-align:center;padding:50px;font-family:sans-serif;">
+            <h1>Email xác thực thành công!</h1>
+            <p>Cảm ơn bạn đã xác minh email: <b>${userEmail}</b></p>
+          </body>
+        </html>
+      `);
     });
   } else {
     return res
@@ -223,6 +230,6 @@ router.get("/is_verify", (req, res) => {
       .json({ message: "Session is old. Please check the lastest email" })
       .send("Session is old. Please check the lastest email");
   }
-});
+})
 
 module.exports = router;

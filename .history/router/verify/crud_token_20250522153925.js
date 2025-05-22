@@ -21,7 +21,6 @@ const addToken = (email, token) => {
       id: Math.random().toString(36).substr(2, 9), // Tạo ID tự động tăng
       email,
       token,
-      isVerify: false,
     };
     tokens.push(newToken);
     saveData(tokens);
@@ -62,21 +61,15 @@ const isExistEmail = (targetEmail) => {
 };
 const setVerifyToken = (token) => {
   const data = loadData();
-  let indexToken = data.findIndex((t) => t.token == token);
-  if (indexToken == -1) {
-    console.log("Không tìm thấy toen");
-    return;
+  let indexToken = data.findIndex(t => t.token == token)
+  if(indexToken == -1){
+    console.log('Không tìm thấy toen');
+    return
   }
   data[index] = {
-    ...data[index],
-    isVerify: true,
-  };
-  saveData(data);
-};
-const isVerifyToken = (token) => {
-  const data = loadData();
-  let indexToken = data.findIndex((t) => t.token == token);
-  return data[indexToken].isVerify
+    ..
+  }
+
 }
 module.exports = {
   loadData,
@@ -86,5 +79,4 @@ module.exports = {
   isExistEmail,
   deleteEmail,
   setVerifyToken,
-  isVerifyToken
 };
