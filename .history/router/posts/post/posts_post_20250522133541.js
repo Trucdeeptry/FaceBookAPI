@@ -51,53 +51,19 @@ router.post("/get-posts", async (req, res) => {
 });
 router.post("/add-post", async (req, res) => {
   try {
-    const { user_id, content, image, hashtags } = req.body;
-    const newPost = new postsModel({
+    const { user_id, content, image, hashtags, author_info } = req.body;
+
+    const newPost = new Post({
       user_id,
       content,
       image,
       hashtags,
+      author_info,
     });
     const savedPost = await newPost.save();
-    res.status(201).json({
-      status: "success",
-      savedPost,
-    });
+    res.status(201).json(savedPost);
   } catch (err) {
     res.status(400).json({ error: err.message });
-  }
-});
-router.put("/:id", async (req, res) => {
-  try {
-    const postId = req.params.id;
-    const updateData = req.body;
-
-    const updatedPost = await postsModel.findByIdAndUpdate(postId, updateData, {
-      new: true,
-    });
-
-    if (!updatedPost) {
-      return res.status(404).json({ error: "Post not found" });
-    }
-    res.status(200).json({
-      status: "success",
-      updatedPost,
-    });
-  } catch (err) {
-    res.status(400).json({ error: err.message });
-  }
-});
-router.delete("/:id", async (req, res) => {
-  try {
-    const deletedPost = await postsModel.findByIdAndDelete(req.params.id);
-
-    if (!deletedPost) {
-      return res.status(404).json({ error: "Post not found" });
-    }
-
-    res.json({ status: "success", message: "Post deleted successfully" });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
   }
 });
 module.exports = router;

@@ -1,14 +1,13 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const router = express.Router();
-const commentModel = require("../../../model/commentsModel.js");
+const commentModel = require("../../../model/commentsModel.js")
 const { getCommentforPost } = require("../../composables/comments.js");
 
 // comment post
 router.post("/get", async (req, res) => {
   try {
-    const { post_id } = req.body;
-    s;
+    const { post_id } = req.body;s
     if (!post_id) {
       res.status(404).json({ error: "post_id is required" });
     }
@@ -45,9 +44,7 @@ router.post("/send", async (req, res) => {
       parentComment.replies.push(new mongoose.Types.ObjectId(savedComment._id));
       await parentComment.save();
     }
-    res
-      .status(200)
-      .json({ status: "success", message: "Post comment successfully" });
+    res.json({ message: "Post comment successfully" });
   } catch (error) {
     res.status(500).json({
       message: `Error post comment:${error}`,
@@ -59,37 +56,30 @@ router.put("/:id", async (req, res) => {
     const commentId = req.params.id;
     const updateData = req.body;
 
-    const updatedComment = await commentModel.findByIdAndUpdate(
-      commentId,
-      updateData,
-      {
-        new: true,
-      }
-    );
+    const updatedComment = await Comment.findByIdAndUpdate(commentId, updateData, {
+      new: true,
+    });
 
     if (!updatedComment) {
       return res.status(404).json({ error: "Comment not found" });
     }
 
-    res
-      .status(200)
-      .json({ status: "success", message: "modify comment successfully" });
+    res.json(updatedComment);
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
 });
 
+// ✅ Xóa comment
 router.delete("/:id", async (req, res) => {
   try {
-    const deletedComment = await commentModel.findByIdAndDelete(req.params.id);
+    const deletedComment = await Comment.findByIdAndDelete(req.params.id);
 
     if (!deletedComment) {
       return res.status(404).json({ error: "Comment not found" });
     }
 
-    res
-      .status(200)
-      .json({ status: "success", message: "Comment deleted successfully" });
+    res.json({ message: "Comment deleted successfully" });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
