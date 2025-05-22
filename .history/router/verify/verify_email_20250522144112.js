@@ -137,7 +137,7 @@ function sendConfirmationEmail(to, token, message) {
 }
 
 router.post("/send-verification", async (req, res) => {
-  let {
+  const {
     email,
     message = "Thank you for registering with TSocial. To complete your registration",
   } = req.body;
