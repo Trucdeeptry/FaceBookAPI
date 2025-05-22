@@ -150,7 +150,7 @@ router.post("/send-verification", async (req, res) => {
     await sendConfirmationEmail(email, token, message);
     res.status(200).json({ status: "success" });
   } catch (error) {
-    res.status(500).json({ message: `Không thể gửi gmail:${error}` });
+    res.status(500).json({ message: "Không thể gửi gmail: "});
   }
 });
 
