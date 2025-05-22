@@ -110,8 +110,6 @@ router.post("/like/:id", async (req, res) => {
     }
     const post = await postsModel.findById(postId);
     if (!post) return res.status(404).json({ error: "Post not found" });
-    console.log(Array.isArray(post.liked_by));
-    
     const index = post.liked_by.findIndex(
       (like) => like.user_id.toString() === user_id
     );

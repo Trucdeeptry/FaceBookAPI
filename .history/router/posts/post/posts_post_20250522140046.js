@@ -100,41 +100,29 @@ router.delete("/:id", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-// like/react post
-router.post("/like/:id", async (req, res) => {
+router.post("/:id/like", async (req, res) => {
   try {
     const postId = req.params.id;
-    const { user_id, type } = req.body; // type: "wow", "like", etc.
-    if (!user_id || !type) {
-      res.status(404).json({ error: "user_id or type not found" });
-    }
-    const post = await postsModel.findById(postId);
-    if (!post) return res.status(404).json({ error: "Post not found" });
-    console.log(Array.isArray(post.liked_by));
-    
-    const index = post.liked_by.findIndex(
-      (like) => like.user_id.toString() === user_id
-    );
+    const { user_id } = req.body;
 
-    if (index === -1) {
-      //  Nếu chưa like, thêm vào mảng
-      post.liked_by.push({ user_id, type: type || "like" });
+    const post = await Post.findById(postId);
+    if (!post) return res.status(404).json({ error: "Post not found" });
+
+    const hasLiked = post.liked_by.includes(user_id);
+
+    if (hasLiked) {
+      // Unlike
+      post.liked_by = post.liked_by.filter((id) => id.toString() !== user_id);
     } else {
-      const existingType = post.liked_by[index].type;
-      if (existingType === type) {
-        //  Nếu like cùng loại => bỏ like (unlike)
-        post.liked_by.splice(index, 1);
-      } else {
-        //  Nếu đã like nhưng khác loại => cập nhật type
-        post.liked_by[index].type = type;
-      }
+      // Like
+      post.liked_by.push(user_id);
     }
 
     await post.save();
 
     res.json({
-      status: "success",
-      message: "Post like status updated",
+      message: hasLiked ? "Post unliked" : "Post liked",
+      liked_by: post.liked_by,
     });
   } catch (err) {
     res.status(500).json({ error: err.message });

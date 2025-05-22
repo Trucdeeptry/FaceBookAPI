@@ -13,13 +13,10 @@ const postSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  liked_by: [
-    {
-      user_id: { type: mongoose.Schema.Types.ObjectId },
-      type: { type: String, default: "like" },
-      default: [],
-    },
-  ],
+  liked_by:  {
+    user_id: { type: mongoose.Schema.Types.ObjectId, required: true },
+    type: { type: String, default: "like" }, // like, wow, love,...
+  }
   created_at: {
     type: Date,
     default: Date.now,

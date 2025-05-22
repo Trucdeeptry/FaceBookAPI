@@ -112,7 +112,7 @@ function sendConfirmationEmail(to, token, message) {
             <div class="email-body">
               <p>Hello,</p>
               <p>${message} and verify your email address, please click the button below:</p>
-              <a href="${process.env.BE_URL}/verify?token=${token}" class="button">Verify Your Email</a>
+              <a href="${process.env.BE_URL}/${type}?token=${token}" class="button">Verify Your Email</a>
               <p>If you didn't use TSocial, you can safely ignore this email.</p>
             </div>
             <div class="footer">
@@ -142,11 +142,8 @@ router.post("/send-verification", async (req, res) => {
     message = "Thank you for registering with TSocial. To complete your registration",
   } = req.body;
   try {
-    if (message.includes("recovery")) {
-      message =
-        "We received a request to reset your password. Please click the link below to create a new password";
-    }
-    const token = createVerificationToken(email);
+    if(message == )
+    const token =  createVerificationToken(email);
     await sendConfirmationEmail(email, token, message);
     res.status(200).json({ status: "success" });
   } catch (error) {
@@ -159,8 +156,7 @@ router.get("/verify", (req, res) => {
   if (!token) {
     return res
       .status(400)
-      .json({ message: "Something when wrong. Please contact the developer" })
-      .send("Something when wrong. Please contact the developer");
+      .json({ message: "Something when wrong. Please contact the developer" });
   }
   const isExist = isExistToken(token);
   if (isExist) {
@@ -168,28 +164,19 @@ router.get("/verify", (req, res) => {
       if (err) {
         return res
           .status(400)
-          .json({ message: "Session has ended. Please try again" })
-          .send("Session has ended. Please try again");
+          .json({ message: "Session has ended. Please try again" });
       }
 
       const userEmail = decoded.email;
       res.status(200).json({
         message: `Account with email ${userEmail} verified successfully`,
         status: "success",
-      }).send(`
-        <html>
-          <body style="text-align:center;padding:50px;font-family:sans-serif;">
-            <h1>Email xác thực thành công!</h1>
-            <p>Cảm ơn bạn đã xác minh email: <b>${userEmail}</b></p>
-          </body>
-        </html>
-      `);
+      });
     });
   } else {
     return res
       .status(400)
-      .json({ message: "Session is old. Please check the lastest email" })
-      .send("Session is old. Please check the lastest email");
+      .json({ message: "Session is old. Please check the lastest email" });
   }
 });
 

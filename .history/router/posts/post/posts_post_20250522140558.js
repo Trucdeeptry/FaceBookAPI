@@ -101,17 +101,14 @@ router.delete("/:id", async (req, res) => {
   }
 });
 // like/react post
-router.post("/like/:id", async (req, res) => {
+router.post("/:id/like", async (req, res) => {
   try {
     const postId = req.params.id;
     const { user_id, type } = req.body; // type: "wow", "like", etc.
-    if (!user_id || !type) {
-      res.status(404).json({ error: "user_id or type not found" });
-    }
-    const post = await postsModel.findById(postId);
+
+    const post = await Post.findById(postId);
     if (!post) return res.status(404).json({ error: "Post not found" });
-    console.log(Array.isArray(post.liked_by));
-    
+
     const index = post.liked_by.findIndex(
       (like) => like.user_id.toString() === user_id
     );
@@ -135,6 +132,7 @@ router.post("/like/:id", async (req, res) => {
     res.json({
       status: "success",
       message: "Post like status updated",
+      liked_by: post.liked_by,
     });
   } catch (err) {
     res.status(500).json({ error: err.message });

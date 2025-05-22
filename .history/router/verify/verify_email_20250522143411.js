@@ -173,23 +173,18 @@ router.get("/verify", (req, res) => {
       }
 
       const userEmail = decoded.email;
-      res.status(200).json({
-        message: `Account with email ${userEmail} verified successfully`,
-        status: "success",
-      }).send(`
-        <html>
-          <body style="text-align:center;padding:50px;font-family:sans-serif;">
-            <h1>Email xác thực thành công!</h1>
-            <p>Cảm ơn bạn đã xác minh email: <b>${userEmail}</b></p>
-          </body>
-        </html>
-      `);
+      res
+        .status(200)
+        .json({
+          message: `Account with email ${userEmail} verified successfully`,
+          status: "success",
+        })
+        .send("Account with email ${userEmail} verified successfully");
     });
   } else {
     return res
       .status(400)
-      .json({ message: "Session is old. Please check the lastest email" })
-      .send("Session is old. Please check the lastest email");
+      .json({ message: "Session is old. Please check the lastest email" });
   }
 });
 
