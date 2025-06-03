@@ -152,9 +152,9 @@ async function updateLikesForUser(userId, userHashtags, allPosts) {
       return false;
     }
 
-    // if (post.likes && post.likes.length > 0) {
-    //   return false;
-    // }
+    if (post.likes && post.likes.length > 0) {
+      return false;
+    }
     const postHashtagsLower = normalizeHashtags(post.hashtags);
     const isMatch = userHashtagsLower.some((userTag) =>
       postHashtagsLower.some(
