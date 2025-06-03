@@ -14,7 +14,7 @@ const lookupAndUnwindStage = [
       let: { userId: { $toObjectId: "$user_id" } },
       pipeline: [
         { $match: { $expr: { $eq: ["$_id", "$$userId"] } } },
-        { $project: { _id: 0, info: 1, avatar: 1 } },
+        { $project: { _id: 1, info: 1, avatar: 1 } },
       ],
       as: "author_info",
     },
