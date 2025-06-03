@@ -56,10 +56,10 @@ async function seedComments() {
     const repliesData = [];
     // Lấy 10 post_id và 10 user_id ngẫu nhiên
     const postIds = await postsCollection
-      .aggregate([{ $sample: { size: 56 } }])
+      .aggregate([{ $sample: { size: 70 } }])
       .toArray();
     const userIds = await usersCollection
-      .aggregate([{ $sample: { size: 26 } }])
+      .aggregate([{ $sample: { size: 90 } }])
       .toArray();
 
    
@@ -114,9 +114,9 @@ async function seedComments() {
     }
 
     // Giả sử bạn muốn tạo 10 comment gốc cho 10 bài post khác nhau
-    for (let i = 0; i < 50; i++) {
+    for (let i = 0; i < 100; i++) {
       const post = postIds[i]; // Lấy bài post (đã có post_created_at)
-      // Tạo 1 comment gốc với created_at >= post.created_at      
+      // Tạo 1 comment gốc với created_at >= post.created_at
       const comment = await generateComment(post, post.created_at, 0);
       commentsData.push(comment);
     }

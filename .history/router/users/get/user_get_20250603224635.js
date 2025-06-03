@@ -16,7 +16,7 @@ router.get("/profile", async (req, res) => {
     if (!user) {
       return res.status(404).json({ error: "user not found" });
     }
-    const { avatar, _id, info, bio, followers, following, friends } = user;
+    const { avatar,_id, info, bio, followers, following, friends } = user;
     const countFollowers = followers.length;
     const countFollwing = following.length;
     const userPost = await postsModel.find({

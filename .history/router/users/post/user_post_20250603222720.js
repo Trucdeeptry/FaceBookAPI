@@ -38,7 +38,7 @@ router.post("/log", async (req, res) => {
 // get user for register
 router.post("/reg", async (req, res) => {
   try {
-    const { email, password, info, type = "reg" } = req.body;
+    const { email, password, info, type = 'reg' } = req.body;
     if (!email || !password || !info) {
       return res.status(400).json({
         message: "email, password, info are required",
@@ -106,8 +106,7 @@ router.post("/info", async (req, res) => {
     if (results.length == 0) {
       return res.status(404).json({ error: "User not found" });
     }
-    console.log(results);
-
+    log
     const userList = results.map((result) => {
       return {
         _id: result._id,

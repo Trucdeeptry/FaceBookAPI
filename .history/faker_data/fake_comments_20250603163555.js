@@ -114,7 +114,7 @@ async function seedComments() {
     }
 
     // Giả sử bạn muốn tạo 10 comment gốc cho 10 bài post khác nhau
-    for (let i = 0; i < 50; i++) {
+    for (let i = 0; i < 20; i++) {
       const post = postIds[i]; // Lấy bài post (đã có post_created_at)
       // Tạo 1 comment gốc với created_at >= post.created_at      
       const comment = await generateComment(post, post.created_at, 0);
