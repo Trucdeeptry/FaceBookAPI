@@ -184,58 +184,5 @@ router.post("/change-info", async (req, res) => {
     res.status(500).json({ error: `Internal Server Error for change info` });
   }
 });
-router.post("/follow", async (req, res) => {
-  try {
-    const { currentUserId, targetUserId } = req.body;
-
-    if (!currentUserId || !targetUserId) {
-      return res.status(400).json({ message: "Thiếu userId" });
-    }
-
-    if (currentUserId === targetUserId) {
-      return res
-        .status(400)
-        .json({ message: "Không thể tự follow chính mình" });
-    }
-
-    const currentUser = await userModel.findById(currentUserId);
-    const targetUser = await userModel.findById(targetUserId);
-
-    if (!currentUser || !targetUser) {
-      return res.status(404).json({ message: "Người dùng không tồn tại" });
-    }
-
-    const isFollowing = currentUser.following.includes(targetUserId);
-
-    if (isFollowing) {
-      // Unfollow
-      await userModel.findByIdAndUpdate(currentUserId, {
-        $pull: { following: targetUserId },
-      });
-
-      await userModel.findByIdAndUpdate(targetUserId, {
-        $pull: { followers: currentUserId },
-      });
-
-      return res.status(200).json({ message: "Đã unfollow", following: false });
-    } else {
-      // Follow
-      await userModel.findByIdAndUpdate(currentUserId, {
-        $addToSet: { following: targetUserId },
-      });
-
-      await userModel.findByIdAndUpdate(targetUserId, {
-        $addToSet: { followers: currentUserId },
-      });
-
-      return res
-        .status(200)
-        .json({ message: "Follow thành công", following: true });
-    }
-  } catch (error) {
-    console.error("Lỗi khi follow:", error);
-    res.status(500).json({ message: "Lỗi server" });
-  }
-});
 
 module.exports = router;
