@@ -51,15 +51,14 @@ router.get("/search", async (req, res) => {
   try {
     const regex = new RegExp(nameQuery, "i"); // i = ignore case
 
-    const users = await userModel
-      .find({
-        $or: [
-          { "info.firstName": { $regex: regex } },
-          { "info.surName": { $regex: regex } },
-        ],
-      })
-      .select("info avatar");
-    res.status(200).json(users);
+    const users = await userModel.find({
+      $or: [
+        { "info.firstName": { $regex: regex } },
+        { "info.surName": { $regex: regex } },
+      ],
+    });
+
+    res.json(users);
   } catch (error) {
     console.error("Search error:", error);
     res.status(500).json({ message: "Internal server error" });

@@ -51,14 +51,13 @@ router.get("/search", async (req, res) => {
   try {
     const regex = new RegExp(nameQuery, "i"); // i = ignore case
 
-    const users = await userModel
-      .find({
-        $or: [
-          { "info.firstName": { $regex: regex } },
-          { "info.surName": { $regex: regex } },
-        ],
-      })
-      .select("info avatar");
+    const users = await userModel.find({
+      $or: [
+        { "info.firstName": { $regex: regex } },
+        { "info.surName": { $regex: regex } },
+      ],
+    });
+
     res.status(200).json(users);
   } catch (error) {
     console.error("Search error:", error);
