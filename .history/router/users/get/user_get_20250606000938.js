@@ -29,8 +29,8 @@ router.get("/profile", async (req, res) => {
         info,
         bio,
         friends,
-        followers,
-        following,
+        countFollwing,
+        countFollowers,
         postsWithComments,
       },
     });
